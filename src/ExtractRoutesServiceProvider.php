@@ -8,6 +8,9 @@
 
 namespace CasaParks\ExtractRoutes;
 
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Routing\Registrar;
+use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\ServiceProvider;
 
 class ExtractRoutesServiceProvider extends ServiceProvider
@@ -26,7 +29,15 @@ class ExtractRoutesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // ...
+        $this->app->singleton(Service::class, function (Container $container) {
+            $registrar = $container->make(Registrar::class);
+
+            if (! method_exists($registrar, 'getRoutes')) {
+                return new Service;
+            }
+
+            return Service::from($registrar->getRoutes());
+        });
     }
 
     /**
@@ -36,6 +47,6 @@ class ExtractRoutesServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [];
+        return [Service::class];
     }
 }
