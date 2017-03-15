@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * This file is part of Casa-Parks/Extract-Routes.
+ *
+ * (c) Connor S. Parks
+ */
+
 namespace CasaParks\ExtractRoutes;
 
 use Illuminate\Support\ServiceProvider;
