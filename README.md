@@ -30,7 +30,3 @@ After installing, register the `CasaParks\ExtractRoutes\ExtractRoutesServiceProv
     CasaParks\ExtractRoutes\ExtractRoutesServiceProvider::class,
 ],
 ```
-
-### Basic Usage
-
-_**TODO**_
