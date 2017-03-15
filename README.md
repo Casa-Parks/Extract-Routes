@@ -30,3 +30,116 @@ After installing, register the `CasaParks\ExtractRoutes\ExtractRoutesServiceProv
     CasaParks\ExtractRoutes\ExtractRoutesServiceProvider::class,
 ],
 ```
+
+### Basic Usage
+
+Create a simple view composer, like so:
+
+```php
+<?php
+
+namespace App\Composers;
+
+use CasaParks\ExtractRoutes\Service as RoutesExtractor;
+use Illuminate\Contracts\View\View;
+
+class RoutesComposer
+{
+    /**
+     * The routes extractor.
+     *
+     * @var \CasaParks\ExtractRoutes\Service
+     */
+    protected $extractor;
+
+    /**
+     * Whether the data is cached or not.
+     *
+     * @var bool
+     */
+    protected $cached;
+
+    /**
+     * The view data.
+     *
+     * @var array
+     */
+    protected $data;
+
+    /**
+     * Creates a new routes composer.
+     *
+     * @param \CasaParks\ExtractRoutes\Service $extractor
+     */
+    public function __construct(RoutesExtractor $extractor)
+    {
+        $this->extractor = $extractor;
+    }
+
+    /**
+     * Compose the view.
+     *
+     * @param \Illuminate\Contracts\View\View $view
+     *
+     * @return void
+     */
+    public function compose(View $view)
+    {
+        if (! $this->cached) {
+            $this->cache();
+        }
+
+        $view->with($this->data);
+    }
+
+    /**
+     * Cache the data.
+     *
+     * @return void
+     */
+    protected function cache()
+    {
+        $this->cached = true;
+
+        // We don't want to include any admin / api routes.
+        $routes = $this->extractor->filterOnly('middleware', 'guest', 'auth');
+
+        $this->data = compact('routes');
+    }
+}
+```
+
+Add this view composer, into your app (or composer) service provider's `boot` method:
+
+```php
+/**
+ * Register any composers for your application.
+ *
+ * @return void
+ */
+public function boot()
+{
+    // ...
+
+    // assuming `layout` is your common layout template.
+    $this->app['view']->composer('layout', 'App\Composers\RoutesComposer');
+
+    // ...
+}
+```
+
+In your common `layout` template file:
+
+```blade
+<!-- ... -->
+<head>
+    <!-- ... -->
+
+    <script>window.routes = {!! $routes->toJson() !!}</script>
+
+    <!-- ... -->
+</head>
+<!-- ... -->
+```
+
+Then utilise as required in your JavaScript.
