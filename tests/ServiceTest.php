@@ -39,14 +39,14 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             ['a' => 'baz', 'b' => ['foo']],
             ['a' => 'baz', 'b' => ['bee']],
             ['a' => 'bee', 'b' => ['foo']],
-            ['a' => 'hello', 'b' => ['world']]
+            ['a' => 'hello', 'b' => ['world']],
         ], $service->toArray());
 
         $this->assertEquals([
             ['a' => 'baz', 'b' => ['foo']],
             ['a' => 'baz', 'b' => ['bee']],
             ['a' => 'bee', 'b' => ['foo']],
-            ['a' => 'hello', 'b' => ['world']]
+            ['a' => 'hello', 'b' => ['world']],
         ], $service->jsonSerialize());
 
         $this->assertEquals('[{"a":"baz","b":["foo"]},{"a":"baz","b":["bee"]},{"a":"bee","b":["foo"]},{"a":"hello","b":["world"]}]', $service->toJson());
